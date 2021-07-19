@@ -9,6 +9,21 @@ export const App = () => {
 
 
   const tasks = useTracker(() => TasksCollection.find({}, { sort: { createdAt: -1 } }).fetch());
+
+  // функция изменения статуса todo
+  const toggleChecked = ({ _id, isChecked }) => {
+    // обращаемся к коллекции и вызываем метод update
+    // в качестве аргумента передаем id и объект
+    TasksCollection.update(_id, {
+      $set: {
+        isChecked: !isChecked
+      }
+    })
+  };
+
+
+  // функция удаления todo обращаемся к коллекции и вызываем метод remove куда передаем id записи
+  const deleteTask = ({ _id }) => TasksCollection.remove(_id);
   
   return (
     <div>
@@ -19,7 +34,7 @@ export const App = () => {
       <ul>
    
         {
-          tasks.map(item => <Task key={item._id} task={item} />)
+          tasks.map(item => <Task key={item._id} task={item} onCheckboxClick={toggleChecked} onDeleteClick={deleteTask} />)
         }
 
       </ul>
